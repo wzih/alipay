@@ -1,6 +1,9 @@
 package zb.servlet;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -9,12 +12,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 import zb.po.Friends;
 import zb.po.User;
 import zb.service.FriendsService;
@@ -250,11 +260,54 @@ public class UserServlet
       client.sendMsgUtf8(Uid, Key, smsText, smsMob);
       out.print(true);
     }
-    else if ("zhuceok".equals(opr))
-    {
+    else if ("zhuceok".equals(opr))//手机注册页面
+    { 
       String paypwd = request.getParameter("paypwd");
       out.print(true);
-    }
+    }else if ("changeheadimg".equals(opr)){//必须返回json格式的数据（修改头像）
+   	 String username= "";//用户名
+   	String fileName ="";//文件名
+   	String savePath = "";//保存路径
+     if(ServletFileUpload.isMultipartContent(request)){//判断请求是否是带有文件上传上来的请求
+    	//创建上传的解析对象
+			ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
+			try {
+				//解析请求 获取到所有的表单元素集合
+			List<FileItem> Items = upload.parseRequest(request);
+			for (FileItem item : Items) {
+				if(item.isFormField()){  //说明是普通的表单元素（后）
+					username=item.getString();
+					
+				}else{//上传上来的文件数据（先）
+					
+					//指定保存文件的目录
+				    savePath = session.getServletContext().getRealPath("UserImgs");
+					File tempFile = new File(savePath);
+					if(!tempFile.exists()){  //判断这个目录是否存在
+						tempFile.mkdirs();
+						System.out.println("创建了新目录:"+tempFile.getName());
+					}
+					//保证文件名唯一
+					fileName = UUID.randomUUID().toString();
+					File file = new File(tempFile, fileName);
+					
+					item.write(file);  //把文件上传到服务器端
+				}
+			}
+			System.out.println("用户名称是："+username);
+			System.out.println("文件名是："+fileName);
+			System.out.println("保存路径是："+savePath);
+			
+			//如果有数据库 要将图片的保存路径入库
+		} catch (Exception e) {}
+     }
+     JsonObject jsonObject =new JsonObject();
+     out.print(new Gson().toJson(jsonObject));
+ }
+    
+    
+    
+    ///////////////////////////////////////////////以上是if-else 结构
     out.flush();
     out.close();
   }

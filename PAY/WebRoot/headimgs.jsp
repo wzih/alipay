@@ -23,19 +23,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							 //普通图片上传
 							  var uploadInst = upload.render({
 							    elem: '#test1'
-							    ,url: 'UserServlet?opr=changeheadimg&user=张三'
+							    ,url: 'UserServlet?opr=changeheadimg'
+							    ,data: {
+								  user:function(){
+									    return $('#id').text();
+									  }
+								}
 							    ,auto:false//是否选完文件后自动上传
 							    ,bindAction:'#btn'//指向一个按钮触发上传
-							    ,size:2000 //设置文件最大可允许上传的大小，单位 KB
+							    ,size:100 //设置文件最大可允许上传的大小，单位 KB
+							    
 							    ,choose:function(obj){//选择文件后的回调函数
 							      //预读本地文件示例，不支持ie8
 							      obj.preview(function(index, file, result){
 							        $('#demo1').attr('src', result); //图片链接（base64）
 							        
-							        console.log(index); //得到文件索引
-     								console.log(file); //得到文件对象
-      								console.log(result); //得到文件base64编码，比如图片
-							        obj.resetFile(index, file, '123.jpg'); //重命名文件名，layui 2.3.0 开始新增
+							        //console.log(index); //得到文件索引
+     								//console.log(file); //得到文件对象
+      								//console.log(result); //得到文件base64编码，比如图片
+							        obj.resetFile(index, file, '1.jpg'); //重命名文件名，layui 2.3.0 开始新增
 							      });
 							    }
 							    ,done: function(res){
@@ -45,7 +51,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							        return layer.msg('上传失败');
 							      }
 							      //上传成功
-							      alert("上传成功")
+							      var index = parent.layer.getFrameIndex(window.name);//获取窗口索引
+							      parent.layer.msg('更改成功！')
+							      parent.layer.close(index);
+							      
 							    }
 							    ,error: function(res){
 							    
@@ -66,6 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</script>
 	</head>
 	<body>
+		<p id="id" style="display:none" >${user.username}</p>
 		<div class="layui-upload" style="margin-left: 20px;">
 		  <div class="layui-upload-list">
 		    <img class="layui-upload-img" width="150" height="150" id="demo1">

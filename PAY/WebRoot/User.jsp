@@ -104,17 +104,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									layer.open({
 									  type: 2,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
 									  title: '修改头像',
-									  area: ['700px', '450px'],
+									  area: ['300px', '300px'],
 									  fixed: false, //不固定
 									  maxmin: false,//可以最小化
 									  scrollbar: false,//浏览器滚动条已锁
-									  content: ['UserFiestweb.html', 'yes']//iframe里是否出现滚动条
+									  content: ['headimgs.jsp', 'no']//iframe里是否出现滚动条
 									});
 									
-									//parent.layer.close(index);//关闭iframe
-									// parent.layer.msg('Hi, man', {shade: 0.3})//在父层弹出一个层
-									//parent.layer.iframeAuto(index);//让层自适应iframe
-									//var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+									
 									
 						})
 						
