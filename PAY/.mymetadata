@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="PAY"
+  id="myeclipse.1550303505932"
+  context-root="/PAY"
+  j2ee-spec="5.0"
+  archive="PAY.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
