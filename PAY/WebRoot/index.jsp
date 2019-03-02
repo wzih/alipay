@@ -278,6 +278,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				);
 			};
 			
+			function zhuce(){
+				location.href="zhuce.jsp";
+			}
+			
 		</script>
 		
 	<head>
@@ -329,7 +333,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							    		<img width="33%" src="img/index2Imgs/change.png"/>
 							    		<ul>
 							    			<li  onclick="layerLogin()" id="l1"><a>登录</a></li>
-							    			<li id="l2"><a href="javascript:void(0)">立即注册</a></li>
+							    			<li id="l2"><a href="javascript:void(0)" onclick="zhuce()">立即注册</a></li>
 							    		</ul>
 							    	</div>
 							    	
@@ -609,6 +613,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					  				<img  style="cursor: pointer; background-color: white; position: relative;bottom: 1px;left: 6px;" width="38px" height="39px"  src="img/index2Imgs/密码.png"/>
 					  				<input style="padding-left: 10px; border: 0px; width: 200px; height: 39px;" type="password"  id="userLoginPassword" />
 					  				<br />
+					  				<span id="loginError" style="position: absolute;left:50px;color: red;"></span>
 					  				<a id="wangjipwd" href="javascript:void(0)" style="position: relative;left:80px;top: 5px; color: white;">忘记登录密码?</a>
 					  				<br /><br /><br />
 					  				<input style=" cursor: pointer; border: 0px; border-radius: 5px; width: 236px; height: 36px;background-color: #007DDB;" type="button" id="loginButton" value="登录" onclick="checkUser()" />
@@ -616,7 +621,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					  									<span id="loginhelp">
 														  		<a style="color: white; font-size: 12px;" href="javascript:void(0)">淘宝会员登录</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 														  		<a style="color: white; font-size: 12px;" href="javascript:void(0)">账户激活</a>
-														  		<a style="color: dodgerblue; font-size: 12px;" href="javascript:void(0)">立即注册</a>
+														  		<a style="color: dodgerblue; font-size: 12px;" href="javascript:void(0)" onclick="zhuce()">立即注册</a>
 														  	</span>
 					  				
 					  </div>

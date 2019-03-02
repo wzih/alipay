@@ -32,7 +32,7 @@ public class BankServlet extends HttpServlet {
 		if (opr==null) {
 			List<Bank> banks = service.getAllBank();
 			session.setAttribute("banks", banks);
-			response.sendRedirect("CardServlet");
+			response.sendRedirect("card.jsp");
 		}
 		
 		out.flush();

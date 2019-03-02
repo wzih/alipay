@@ -1,10 +1,12 @@
 package zb.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 
 
@@ -70,7 +72,9 @@ public class BaseDAO {
 				for (int i = 0; i < params.length; i++) {
 					pstmt.setObject(i+1, params[i]);
 				}
+				
 			}
+			System.out.println(sql);
 			count = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -94,4 +98,7 @@ public class BaseDAO {
 		} 
 		return rs;
 	}
+	
+	
+	
 }

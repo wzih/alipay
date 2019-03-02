@@ -28,12 +28,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var money2 = false;
 			var money3 = false;
 			var infotb =null;				//表格信息
+			
 			var checkisshow=false;//是否批量
 				var checkStatus = null;//选中行的信息
 				
 				$(function(){
 					
-				
 				
 				
 				
@@ -47,15 +47,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							
 							$("#hellotext").text("凌晨好 ,")
 							
-						}else if(12<hour<18){
+						}else if(12<hour&&hour<18){
 							
-							$("#hellotext").text("晚上好 ,")
+							$("#hellotext").text("下午好 ,")
 							
-						}else if(6<hour<12){
+						}else if(6<hour&&hour<12){
 							
 							$("#hellotext").text("上午好 ,")
 							
-						}else if(18<hour<23){
+						}else if(18<hour&&hour<23){
 							
 							$("#hellotext").text("晚上好 ,")
 							
@@ -70,19 +70,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								});//弹出一个tips层(一次性)
 							},2000)
 							
-						$("#logOut").click(function(){
-										layer.msg('你确定退出么？', {
-										  time: 0 //不自动关闭
-										  ,btn: ['确定', '取消']
-										  ,yes: function(index){
-										    layer.msg('已经安全退出',function(){
-										    	
-										    });
-										   }
-										});
-						})
-						
-						
 						
 						$("#TopUserInfo").hover(function(){//最顶部个人信息div
 							$("#user-info-hide").slideDown();
@@ -269,15 +256,50 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						
 						
 						
-						
+				var searchMsg = setInterval(function() {//反复有没有未读信息
+					$.post(
+						"UnReadMsgServlet",
+						"opr=getAllmsg",
+						function(rtnData){
+							if(rtnData!=null){//有未读信息
+								if(rtnData.size==$("#xiaoxi-ul").find("li").length){//数据量没变
+								
+								
+								}else{//数据量有变化
+									$("#xiaoxi-ul li").remove();
+									$.each(rtnData,function(index,item){
+									
+						        	var li="<li id='"+item.id+"' style='width: 100%; height: 100px;border-bottom:1px solid #C2C2C2 ; position: relative;top: 15px;'><div id='xiaoxi-hide-body-ul-li-left' style='width: 20%; height: 100%;float: left;border-right:1px dashed #C2C2C2 ; '><span id='' style='position: absolute; left:  60px;'><p  style='color: white;font-weight: bolder; position: relative; top: 15px; left: -30px;'>"+item.type+"</p><p style='color: #CCCCCC; font-size: 12px; margin-top: -30px; position: relative; top: 48px; left: -30px;'>"+item.account+"</p><p style='color: #CCCCCC;font-size: 12px; margin-top: -15px; position: relative; top: 66px; left: -30px;'>金额：<span style='font-size: 18px; color: #5FB878;'>"+item.money+"</span>元</p></span></div><div id='xiaoxi-hide-body-ul-li-right'style='width: 79%; height: 100%;float: left;'><div id='5FB878yuan1' style=' position: relative; top: 34px; left: 53px;     float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;'></div><div id='5FB878yuan2' style=' position: relative; top: 34px; left: 280px;   float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;'></div><div id='5FB878yuan3' style=' position: relative; top: 34px; left: 520px;   float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;'></div><hr width=' 480px' color='#5FB878' style='margin-top:  38px;margin-left: 60px;' /><!--淡绿的时间线，上面是三个小圆点 --><span id='' style='position: relative; top: 20px;left:25px; float: left;'><p style='color: #CCCCCC; font-size: 12px; margin-top: -25px;text-align: center;'>转账请求发起</p><p style='color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;'>"+item.date+"</p></span><span id='' style='position: relative; top: 20px;left: 190px; float: left;'><p style='color: #CCCCCC; font-size: 12px; margin-top: -25px; text-align: center;'>已受理</p><p style='color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;'>"+item.date+"</p></span><span id='' style='position: relative; top: 20px;left: 370px; float: left;'><p style='color: #5FB878; font-size: 12px; margin-top: -25px;text-align: center;'>转账已到账</p><p style='color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;'>"+item.date+"</p></span><span hidden='hidden' id='hides-tips' style='position: relative; top: -30px;left: 160px; float: left;'><p style='color: #2D93CA; font-size: 12px; margin-top: -18px;text-align: center;'>如这个时间点后仍未到账<br>请咨询客服</p></span><span  id='hides-close' style='position: relative; top: -18px;left: 430px; float: left;'><img onclick='delDIV(this)' style='cursor: pointer;' src='img/UserFirstIMG/guanbi.png'/></span></div></li>";	
+						        	
+						        	$("#xiaoxi-ul").prepend(li) //将li插入到ul的内部前面
+						        	})
+								}
+								
+							
+							}//有未读信息
+						},"json"
+					);
+					var licount = 	$("#xiaoxi-ul").find("li").length;
+					$("#xiaoxiCount").text(licount);	//显示未读信息数量
+				
+				}, 1000)		
 				});
 		</script>
 		<script type="text/javascript">
 			
 			function delDIV(thiz){ //确认删除这信息li方法 
 				
-				//$(thiz).remove();
-				$(thiz).parent().parent().parent().remove();//img>spen>div>li.remove
+				var licount = 	$("#xiaoxi-ul").find("li").length;
+				$("#xiaoxiCount").text(licount);//xiaoxi-ul.li.count//更新消息显示数量
+				$.post(
+				"UnReadMsgServlet",
+				"opr=delmsg&msgid="+$(thiz).parent().parent().parent().attr("id"),//这个li的id
+				function(rtnData){
+					if(rtnData=="true"){
+						$(thiz).parent().parent().parent().remove();//img>spen>div>li.remove
+					}
+				},"text")
+				
 			}
 			
 			function searcgoninput(){
@@ -286,8 +308,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						)
 			}
 			
-			function logout(){
-				location.href="UserServlet?opr=logout";
+			function logout(){//退出方法
+				layer.msg('你确定退出吗？', {
+				  time: 0 //不自动关闭
+				  ,btn: ['安全退出', '取消']
+				  ,yes: function(index){
+				    layer.close(index);
+				    location.href="UserServlet?opr=logout";
+				  }
+				});
+				
 			}
 			
 			
@@ -310,13 +340,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 													<a id="logOut" style="margin-top: 3px; color: white; float: right; font-size: 12px;text-decoration: none;" href="javascript:void(0)" onclick="logout()"> &nbsp;&nbsp; &nbsp;&nbsp;退出 &nbsp;  &nbsp;   &nbsp;  &nbsp;</a>
 													<span id="TopUserInfo">
 														<img id="jiantou111" style="float: right; margin-top:3px ; cursor: pointer;" src="img/UserFirstIMG/JIANTOU(1).png"/>
-														<a  id="hellouser" style="margin-top: 3px; color: white; float: right; font-size: 12px;text-decoration: none;" href="javascript:void(0)">你好，${user.username } </a>
+														<a  id="hellouser" style="margin-top: 3px; color: white; float: right; font-size: 12px;text-decoration: none;" href="javascript:void(0)">你好，${user.name } </a>
 													</span>
 												</div>
 												<div hidden="hidden" id="user-info-hide" style="width: 230px; height: 150px; z-index: 1;background-color: whitesmoke; position: absolute;right: 38.3%; top: 0px;">
 													<div id="user-info-hide-top" style="height: 27px; background-color: #2F4056;">
 														<img  style="float: right; margin-top:3px ; cursor: pointer; margin-right: 8px; transform: rotate(180deg); " src="img/UserFirstIMG/JIANTOU(1).png"/>
-														<a  id="hellouser" style="margin-top: 3px; color: white; float: right; font-size: 12px;text-decoration: none;" href="javascript:void(0)">你好，${user.username } </a>
+														<a  id="hellouser" style="margin-top: 3px; color: white; float: right; font-size: 12px;text-decoration: none;" href="javascript:void(0)">你好，${user.name } </a>
 													</div>
 													<div id="user-info-hide-body" style=" height: 150px;">
 														
@@ -324,13 +354,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 																	<img src="img/index2Imgs/diqiu.png" style="width: 50px; height: 50px; margin: 5px;"/>
 																	
 																	<a style="font-size: 14px; position: absolute; left: 65px; top: 65px;color: #555555;">${user.tel }</a>
-																	<a href="" class="han-a-hover-orange-text-decoration" style="font-size: 13px; position: relative;top: -8px;">账户设置</a>
+																	<a href="updateUserInfo.jsp" class="han-a-hover-orange-text-decoration" style="font-size: 13px; position: relative;top: -8px;">账户设置</a>
 																	<a style="font-size: 12px; text-decoration: none;position: relative;top: -8px;color: #2F4056;">|</a>
 																	<a href="" class="han-a-hover-orange-text-decoration" style="font-size: 13px;position: relative;top: -8px;">交易记录</a>
 																	
 																</div>
 																<div id="user-info-hide-body-2" style="background-color: white; border-bottom: 0.1px dashed #DDDDDD;border-width: 80%; height: 45px;">
-																		<a style="font-size: 13px; text-decoration: none;position: relative;top: 18px;left:10px; color:#555555 ;">账户余额：</a>
+																		<a style="font-size: 13px; text-decoration: none;position: relative;top: 18px;left:10px; color:#555555 ;">账户余额：**.**</a>
 																		<a href="" id="top-hide-showmoney" style=" background-color: lightblue; border: #E2E2E2 1px solid; text-decoration: none;  border-radius:4px ; padding: 3px; font-size: 13px;position: relative;top: 18px;left:10px;">显示余额</a>
 																		<a href="" class="han-a-hover-orange-text-decoration" style="font-size: 13px;position: relative;top: 18px;left:10px;">充值</a>
 																		
@@ -438,11 +468,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div id="BodyBodyContent" style="width: 66%; height:120px; position: absolute; left: 17%;">
 						
 						<img id="UserImg" style="width: 80px; height:80px; border-radius:100px ; cursor: pointer;border: 2px white solid; margin-top: 18px;"
-							 src="img/index2Imgs/item2.jpg"/>
+							 src='http://47.99.191.102:8080/PAY/UserImgs/${image}'/>
 						
-						
+						<span id="imgurl" style="display: none;">${image }</span>
 						<a id="hellotext" style="position: absolute;top: 40px; left: 100px; color: whitesmoke;"></a>
-						<a href="#" style="position: absolute;top: 40px; left: 160px; color: whitesmoke; margin-right: 10px; text-decoration: none; ">${user.username }</a>
+						<a href="#" style="position: absolute;top:       40px; left: 160px; color: whitesmoke; margin-right: 10px; text-decoration: none; ">${user.name }</a>
 						<a style="position: absolute;top: 45px; left: 240px; color: whitesmoke; font-size: 12px; ">转账看头像，安全有保障 </a>
 						<a href="#" id="changeTouxiang" style="position: absolute;top: 45px; left: 375px; color:#1E9FFF; font-size: 12px;  text-decoration: none;">修改头像</a> 
 						
@@ -459,7 +489,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<span id="showxiaoxilist" style="cursor: pointer; position: absolute; top: 0px; left: 45%; width: 75px; height: 32px; background-color: #999999; opacity: 1; 
 							border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
 							<img style="margin-left: 5px;" src="img/UserFirstIMG/xiaoxi.png"/>
-							<a style="font-size: 20px;font-weight: bolder; color: whitesmoke; position: relative;bottom: -3px">12</a>
+							<a id="xiaoxiCount" style="margin-left:5px; font-size: 20px;font-weight: bolder; color: whitesmoke; position: relative;bottom: -3px">3</a>
 						</span>
 						
 					</div>
@@ -521,51 +551,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									</div>
 								</li>
 								
-								
-									<li id="thisLIxiaoxiID" style="width: 100%; height: 100px;border-bottom:1px solid #C2C2C2 ; position: relative;top: 15px;">
-										<div id="xiaoxi-hide-body-ul-li-left" style="width: 20%; height: 100%;float: left;border-right:1px dashed #C2C2C2 ; ">
-											
-											<span id="" style="position: absolute; left:  60px;">
-												<p  style="color: white;font-weight: bolder; position: relative; top: 15px; left: -30px;"></p>
-												<p style="color: #CCCCCC; font-size: 12px; margin-top: -30px; position: relative; top: 48px; left: -30px;">|尾号|</p>
-												<p style="color: #CCCCCC;font-size: 12px; margin-top: -15px; position: relative; top: 66px; left: -30px;">金额：<span style="font-size: 18px; color: #5FB878;"></span>元</p>
-											</span>
-											 
-											  
-										</div>
-										<div id="xiaoxi-hide-body-ul-li-right"style="width: 79%; height: 100%;float: left;">
-											
-											<div id="5FB878yuan1" style=" position: relative; top: 34px; left: 53px;     float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;"></div>
-											<div id="5FB878yuan2" style=" position: relative; top: 34px; left: 280px;   float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;"></div>
-											<div id="5FB878yuan3" style=" position: relative; top: 34px; left: 520px;   float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;"></div>
-											<hr width=" 480px" color="#5FB878" style="margin-top:  38px;margin-left: 60px;" /><!--淡绿的时间线，上面是三个小圆点 -->
-											
-											<span id="" style="position: relative; top: 20px;left:5px; float: left;">
-													<p style="color: #CCCCCC; font-size: 12px; margin-top: -25px;text-align: center;">退款发往银行</p>
-													<p style="color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;">12月06日 22点35分</p>
-											</span>
-											<span id="" style="position: relative; top: 20px;left: 135px; float: left;">
-													<p style="color: #CCCCCC; font-size: 12px; margin-top: -25px; text-align: center;">银行受理</p>
-													<p style="color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;">12月06日 23点00分</p>
-											</span>
-											<span id="" style="position: relative; top: 20px;left: 290px; float: left;">
-													<p style="color: #5FB878; font-size: 12px; margin-top: -25px;text-align: center;">银行已入账</p>
-													<p style="color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;">12月06日 22点35分</p>
-											</span>
-											
-											<span hidden="hidden" id="hides-tips" style="position: relative; top: -30px;left: 160px; float: left;">
-													<p style="color: #2D93CA; font-size: 12px; margin-top: -18px;text-align: center;">如这个时间点后退款仍未到账<br>请咨询银行</p>
-													
-											</span>
-											
-											<span hidden="hidden" id="hides-close" style="position: relative; top: -18px;left: 180px; float: left;">
-												<img onclick="delDIV(this)" style="cursor: pointer;" src="img/UserFirstIMG/guanbi.png"/>
-											</span>
-											
-										</div>
-									</li>
-								
-								
 								<!--提现DIV高度100px-->
 								<li id="thisLIxiaoxiID" style="width: 100%; height: 100px;border-bottom:1px solid #C2C2C2 ; position: relative;top: 15px;">
 									<div id="xiaoxi-hide-body-ul-li-left" style="width: 20%; height: 100%;float: left;border-right:1px dashed #C2C2C2 ; ">
@@ -610,50 +595,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									</div>
 								</li>
 								
-								<!--退款至银行卡DIV高度100px-->
-								<li id="thisLIxiaoxiID" style="width: 100%; height: 100px;border-bottom:1px solid #C2C2C2 ; position: relative;top: 15px;">
-									<div id="xiaoxi-hide-body-ul-li-left" style="width: 20%; height: 100%;float: left;border-right:1px dashed #C2C2C2 ; ">
-										
-										<span id="" style="position: absolute; left:  60px;">
-											<p  style="color: white;font-weight: bolder; position: relative; top: 15px; left: -30px;">充值到余额</p>
-											<p style="color: #CCCCCC; font-size: 12px; margin-top: -30px; position: relative; top: 48px; left: -30px;">中国工商银行|尾号8888|</p>
-											<p style="color: #CCCCCC;font-size: 12px; margin-top: -15px; position: relative; top: 66px; left: -30px;">金额：<span style="font-size: 18px; color: #5FB878;">66666.66</span>元</p>
-										</span>
-										  
-									</div>
-									<div id="xiaoxi-hide-body-ul-li-right"style="width: 79%; height: 100%;float: left;">
-										
-										<div id="5FB878yuan1" style=" position: relative; top: 34px; left: 53px;     float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;"></div>
-										<div id="5FB878yuan2" style=" position: relative; top: 34px; left: 280px;   float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;"></div>
-										<div id="5FB878yuan3" style=" position: relative; top: 34px; left: 520px;   float: left; width: 10px; height: 10px; border-radius: 5px; background-color: #5FB878;"></div>
-										<hr width=" 480px" color="#5FB878" style="margin-top:  38px;margin-left: 60px;" /><!--淡绿的时间线，上面是三个小圆点 -->
-										
-										<span id="" style="position: relative; top: 20px;left:5px; float: left;">
-												<p style="color: #CCCCCC; font-size: 12px; margin-top: -25px;text-align: center;">请求发往银行</p>
-												<p style="color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;">2月23日 20点09分</p>
-										</span>
-										<span id="" style="position: relative; top: 20px;left: 135px; float: left;">
-												<p style="color: #CCCCCC; font-size: 12px; margin-top: -25px; text-align: center;"> 银行受理</p>
-												<p style="color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;">2月23日 20点16分</p>
-										</span>
-										<span id="" style="position: relative; top: 20px;left: 290px; float: left;">
-												<p style="color: #5FB878; font-size: 12px; margin-top: -25px;text-align: center;">余额已入账</p>
-												<p style="color: #CCCCCC; font-size: 12px; margin-top: 0px;text-align: center;">2月23日 20点16分</p>
-										</span>
-										
-										<span hidden="hidden" id="hides-tips" style="position: relative; top: -30px;left: 160px; float: left;">
-												<p style="color: #2D93CA; font-size: 12px; margin-top: -18px;text-align: center;">如这个时间点后退款仍未到账<br>请咨询银行</p>
-												
-										</span>
-										
-										<span hidden="hidden" id="hides-close" style="position: relative; top: -18px;left: 180px; float: left;">
-											<img onclick="delDIV(this)" style="cursor: pointer;" src="img/UserFirstIMG/guanbi.png"/>
-										</span>
-										
-									</div>
-								</li>
-								
-								  
 								
 								
 							</ul>
@@ -772,7 +713,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 												<br />	
 												<img style="position: relative; top: 10px;" src="img/UserFirstIMG/linedesign-08.png"/>
 												<a style="color: #666666;font-size: 13px; position: relative; top: 10px; ">银行卡：</a>
-												<a href="card.jsp" style="text-decoration: none; color:#2D93CA; font-size: 13px; position: relative; top: 10px;  ">管理</a>
+												<a href="BankServlet" style="text-decoration: none; color:#2D93CA; font-size: 13px; position: relative; top: 10px;  ">管理</a>
 												<hr color="#D3D4D3"  style="width: 130%; position: relative; top: 10px;" />  
 												  	
 												<img style="position: relative; top: 10px;" src="img/UserFirstIMG/alibaba.png"/>
@@ -906,45 +847,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 			function searchByType(num){
 				var date1 = $("#test1").val();
-				var date2 = $("#test2").val();
+				
 				var stateid = $("#stateid").html();
-				$.post(
-					"BillServlet",
-					"opr=search&typeid="+num+"&date1="+date1+"&date2="+date2+"&stateid="+stateid,
-					function(rtnData){
-						if (rtnData!="") {
-								$(".h").remove();
-								$.each(rtnData,function(index,item){
-									var tr = "<tr class='h'>"+
-													"<td>"+item.id+"</td>"+
-													"<td>"+item.type.name+"</td>"+
-													"<td>"+item.createDate+"</td>"+
-													"<td>"+item.otheruser.username+"</td>"+
-													"<td>"+item.money+"</td>"+
-													"<td>"+item.state.name+"</td>"+
-													"<td><a class='del' href='javascript:void(0)' onclick='del(this)'>删除</a></td>"+
-											 "</tr>";
-									$("#title").after(tr);
-								})
+				billtable.reload({
+						url:'BillServlet',
+						method:'post',
+						where:{
+							opr:'search',
+							date1 : date1,
+							typeid : num,
+							stateid : stateid
+						},
+						page:{
+							curr:1
 						}
-					},
-					"json"
-				);
+					})
 			}
 			
 			
 			function searchByState(num){
 				var date1 = $("#test1").val();
-				var date2 = $("#test2").val();
 				var typeid = $("#typeid").html();
-				$.post(
-					"BillServlet",
-					"opr=search&stateid="+num+"&date1="+date1+"&date2="+date2+"&typeid="+typeid,
-					function(rtnData){
-						
-					},
-					"json"
-				);
+				billtable.reload({
+						url:'BillServlet',
+						method:'post',
+						where:{
+							opr:'search',
+							date1 : date1,
+							typeid : typeid,
+							stateid : num
+						},
+						page:{
+							curr:1
+						}
+				})
 				
 			}	
 			
@@ -1046,7 +982,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											</div>
 											
 											<!--最底层div-->
-				<div  id="bodyd" style="width: 155%;  height:auto; position: absolute; left: -29.5%;  background-color: #23262E ">
+				<div  id="bodyd" style="width: 300%;  height:auto; position: absolute; left: -29.5%;  background-color: #23262E ">
 					
 						<div id="bottom" style="color: #F5F5F5; font-size: 12px;margin-left:10%; margin-right:10%; z-index: 3;height: 180px;">
 						<br/><br/><br/>

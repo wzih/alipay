@@ -33,7 +33,7 @@ public class HuabaiServlet extends HttpServlet {
 		int userid = Integer.valueOf(session.getAttribute("userid").toString());
 		String opr = request.getParameter("opr");
 		if (opr==null) {
-			
+			response.sendRedirect("card.jsp");
 			
 		}else if ("update".equals(opr)) {
 			int availableamount = Integer.valueOf(request.getParameter("availableamount"));

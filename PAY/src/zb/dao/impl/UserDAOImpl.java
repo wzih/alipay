@@ -53,7 +53,9 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 		String tel = info.get("tel").toString();                //ÊÖ»úºÅÂë
 		int userid = Integer.valueOf(info.get("userid").toString()); 
 		int money = Integer.valueOf(info.get("money").toString());
+		int friendsid = Integer.valueOf(info.get("friendsid").toString());
 		int count = 0; 
+		String inorout = info.get("inorout").toString();  
 		String sql = "UPDATE USER";
 		
 		if (username!="") {
@@ -72,7 +74,7 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 			sql += " SET IMAGE = ? WHERE ID = ?";
 			count = executeUpdate(sql, image,userid);
 		}
-		if (age!=0) {
+		if (age!=20) {
 			sql += " SET AGE = ? WHERE ID = ?";
 			count = executeUpdate(sql, age,userid);
 		}
@@ -81,8 +83,16 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 			count = executeUpdate(sql, tel,userid);
 		}
 		if (money!=0) {
-			sql += " SET BALANCE = BALANCE - ? WHERE ID = ?";
-			count = executeUpdate(sql, money,userid);
+			if (friendsid!=0) {
+				sql += " SET BALANCE = BALANCE + ? WHERE ID = ?;";
+				count = executeUpdate(sql, money,friendsid);
+			} else if (inorout.equals("in")) {
+				sql += " SET BALANCE = BALANCE + ? WHERE ID = ?;";
+				count = executeUpdate(sql, money,userid);
+			} else if (inorout.equals("out")) {
+				sql += " SET BALANCE = BALANCE - ? WHERE ID = ?;";
+				count = executeUpdate(sql, money,userid);
+			}
 		}
 		return count;
 	}
@@ -94,22 +104,26 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 		
 		String cardid = info.get("idCard").toString();
 		String sql = "SELECT USERNAME,NAME,TEL FROM USER ";
-		if (tel!="") {
-			sql+="WHERE TEL = ?";
+		try {
+			if(rs!=null){
+				rs.close();
+			}
+		} catch (Exception e) {}
+		if (tel!=""){
+			sql+=" WHERE TEL = ?";
 			rs = executeQuery(sql, tel);
-		}
-		
-		if (cardid!="") {
-			sql+="WHERE IDCARD = ?";
+		}else if(cardid!="") {
+			sql+=" WHERE IDCARD = ?";
 			rs = executeQuery(sql, cardid);
+		}else{
+			rs = executeQuery(sql);
 		}
 		User user = null;
 		try {
-			if (rs.next()) {
+			if(rs.next()) {
 				user = new User(rs.getString("username"), rs.getString("name"), rs.getString("tel"));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			closeAll();

@@ -92,41 +92,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								title: '提示'
 								,content: '身份号已注册，请重新输入其他身份证号！'
 							}); 
-						}else {
-							$.post(
-								"UserServlet",
-								"opr=add&tel="+tel+"&username="+username+"&name="+name+"&idCard="+cardid+"&loginPWD="+loginpwd+"&payPWD="+paypwd,
-								function(rtnDate){
-									if (rtnDate!="true") {
-										id=rtnDate;
-										layer.open({
-											title: '提示'
-											,content: '注册成功！'
-										});
-										
-									}	
-								},
-								"json"
-							)
-							
-							$.post(
-								"VIPServlet",
-								"opr=add&userid="+id,
-								function(rtnDate){
-									if (rtnDate=="true") {
-										alert(1);
-									}
-								},
-								"text"
-							)
-							
-							
-							
-							location.href = "index.jsp";
-						}				
+							return;	
+						}						
 					},
 					"json"
 				)
+					
+						
+					$.post(
+						"UserServlet",
+						"opr=add&tel="+tel+"&username="+username+"&name="+name+"&idCard="+cardid+"&loginPWD="+loginpwd+"&payPWD="+paypwd,
+						function(rtnDate){
+							if (rtnDate!="true") {
+								layer.open({
+									title: '提示'
+									,content: '注册成功！'
+								});
+							}	
+						},
+						"json"
+					)
+							
+					$.post(
+						"VIPServlet",
+						"opr=add&userid="+id,
+						function(rtnDate){
+						},
+						"text"
+					)
+							
+							
+							
+				location.href = "index.jsp";
 				
 				
 			}
@@ -214,7 +211,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<!--logo层div-->
 		<div  id="bodyBody" style="width: 100%; height:75px;">
 			<div id="BodyBodyContent" style="width: 66%; height:75px; position: absolute; left: 17%;">
-				<a href="User.jsp">
+				<a href="index.jsp">
 					<img  style=" cursor: pointer; margin-top:20px ;" src="img/index2Imgs/index2logo.png"/>
 				</a>
 				<ul style="float: right; margin-top: 45px; ">
@@ -299,7 +296,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div style="width: 330px;height: 55px; "><span style="float:right;position: relative;top: 6px;color: #4D4D4D;font-size: 14px;">支付密码</span></div>
 					<div style="width: 330px;height: 55px; "><span style="float:right;position: relative;top: 6px;color: #4D4D4D;font-size: 14px;">确认支付密码</span></div>
 					<div style="width: 330px;height: 55px; "><span style="float:right;position: relative;top: 6px;color: #4D4D4D;font-size: 14px;">手机号</span></div>
-					<div style="width: 330px;height: 55px; "><span style="float:right;position: relative;top: 6px;color: #4D4D4D;font-size: 14px;"></span></div>
+					<div style="width: 330px;height: 55px; "><span style="float:right;position: relative;top: 6px;color: #4D4D4D;font-size: 14px;">验证码</span></div>
 				</div>
 				
 				

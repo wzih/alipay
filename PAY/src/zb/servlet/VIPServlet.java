@@ -32,7 +32,7 @@ public class VIPServlet extends HttpServlet {
 			session.setAttribute("VIP", vip);
 			response.sendRedirect("TaobaoServlet");
 		}else if ("add".equals(opr)) {
-			int userid = Integer.valueOf(request.getParameter("userid"));
+			int userid = Integer.valueOf(session.getAttribute("newId").toString());
 			int count = service.add(userid);
 			
 		} 

@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 
 import zb.po.Bill;
 import zb.service.BillService;
+import zb.service.UnReadMsgService;
 
 public class BillServlet extends HttpServlet {
 	BillService service = new BillService();
@@ -52,17 +53,21 @@ public class BillServlet extends HttpServlet {
 			Map<String, Object> info = getInfo(request);
 			info.put("userid", userid);
 			List<Bill> bills = service.getAllInfo(info);
-			JsonObject jsonObject = new JsonObject();
+			
+			JsonArray jsonArray = new JsonArray();
 			for (Bill bill2 : bills) {
+				JsonObject jsonObject = new JsonObject();
 				jsonObject.addProperty("id", bill2.getId());
 				jsonObject.addProperty("typeName",bill2.getType().getName());
 				jsonObject.addProperty("stateName",bill2.getState().getName());
 				jsonObject.addProperty("money", bill2.getMoney());
 				jsonObject.addProperty("description",bill2.getDescription());
 				jsonObject.addProperty("createDate", bill2.getCreateDate().toString());
+				jsonArray.add(jsonObject);
+				
 			}
-			System.out.println("["+jsonObject+"]");
-			out.print("["+jsonObject+"]");
+			System.out.println(jsonArray);
+			out.print(jsonArray);
 			
 		}else if ("del".equals(opr)) {
 			Map<String, Object> info = getInfo(request);
@@ -72,7 +77,7 @@ public class BillServlet extends HttpServlet {
 			}else {
 				out.print("false");
 			}
-		}else if("add".equals(opr)){
+		}else if("add".equals(opr)){//新增账单
 			Map<String, Object> info = getInfo(request);
 			info.put("userid", userid);
 			int count = service.addBill(info);
@@ -81,6 +86,17 @@ public class BillServlet extends HttpServlet {
 			}else {
 				out.print("false");
 			}
+			//==========hty-新增未读信息=不需要返回值=================================================
+			UnReadMsgService msgService =new UnReadMsgService();
+			Map<String, Object> msginfo = getInfo(request);
+			int msgcount = msgService.addmsg(msginfo);
+			if (msgcount == 1){
+				System.out.println("新增未读信息一条");
+			}else {
+				System.out.println("新增未读信息失败");
+			}
+			//==========hty-新增未读信息=不需要返回值=================================================
+		
 		}
 		out.flush();
 		out.close();
@@ -90,19 +106,22 @@ public class BillServlet extends HttpServlet {
 		int typeid = request.getParameter("typeid")==null?0:Integer.valueOf(request.getParameter("typeid").toString());
 		int stateid = request.getParameter("stateid")==null?0:Integer.valueOf(request.getParameter("stateid").toString());
 		int money = request.getParameter("money")==null?0:Integer.valueOf(request.getParameter("money"));
-		
 		String description = request.getParameter("description")==null?"":request.getParameter("description");
 		String name = request.getParameter("name")==null?"":request.getParameter("name");
 		String tel = request.getParameter("tel")==null?"":request.getParameter("tel");
 		int otheruserid = request.getParameter("friendsId")==null?0:Integer.valueOf(request.getParameter("friendsId"));
-		
 		String type = request.getParameter("type")==null?"":request.getParameter("type");
+		System.out.println("request.getParameter(type)"+type);
+		
+		
+		
 		if (type=="转账") {
 			typeid = 4;
 		}
 		
 		
 		Calendar now = Calendar.getInstance(); 
+		now.add(Calendar.DAY_OF_MONTH, 1);
 		Date date1 = now.getTime();
 		now.add(Calendar.MONTH, -1);
 		Date date2 = now.getTime();
@@ -125,6 +144,16 @@ public class BillServlet extends HttpServlet {
 		info.put("name", name);
 		info.put("tel", tel);
 		info.put("otheruserid", otheruserid);
+		//hty-2019-3-2-未读信息功能 begin
+		int msgmoney = request.getParameter("money")==null?0:Integer.valueOf(request.getParameter("money"));
+		String msgaccount = request.getParameter("tel")==null?"":request.getParameter("tel");
+		String msgtype = request.getParameter("type")==null?"":request.getParameter("type");
+		Date msgdate =   new Date();
+		info.put("msgmoney", msgmoney);
+		info.put("msgaccount", msgaccount);
+		info.put("msgtype", msgtype);
+		info.put("msgdata", msgdate);
+		//hty-2019-3-2-未读信息功能 end
 		return info;
 	}
 	

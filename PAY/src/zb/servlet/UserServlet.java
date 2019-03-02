@@ -58,8 +58,9 @@ public class UserServlet
     {
       Map<String, Object> info = getInfo(request);
       int addCount = this.userService.addUser(info);
-      User user = userService.getInfo(info);
-      int id = user.getId().intValue();
+      User user = userService.getOneInfo(info.get("tel").toString());
+      int id = user.getId();
+      session.setAttribute("newId", id);
       if (addCount == 1) {
         out.print(new Gson().toJson(id));
       } else {
@@ -69,7 +70,7 @@ public class UserServlet
     else if ("update".equals(opr))//更改
     {
       Map<String, Object> info = getInfo(request);
-      int userid = Integer.valueOf(session.getAttribute("userid").toString()).intValue();
+      int userid =Integer.valueOf(session.getAttribute("userid").toString()).intValue();
       info.put("userid", Integer.valueOf(userid));
       int updateCount = this.userService.updateUser(info);
       if (updateCount == 1) {
@@ -84,16 +85,15 @@ public class UserServlet
       Map<String, Object> info = getInfo(request);
       String tel = request.getParameter("tel");
       String loginPWD = request.getParameter("loginPWD");
-      System.out.println(tel);
-      System.out.println(loginPWD);
       try
       {
         User user = this.userService.login(tel, loginPWD);
         List<Friends> friends = this.friendsService.getAllFriens(user.getId().intValue());
         session.setAttribute("friends", friends);
         session.setAttribute("user", user);
+        session.setAttribute("image", user.getImage());
         session.setAttribute("tel", user.getTel());
-        
+        session.setAttribute("username", user.getUsername());
         int userid = user.getId().intValue();
         session.setAttribute("userid", Integer.valueOf(userid));
         info.put("userid", userid);
@@ -101,7 +101,7 @@ public class UserServlet
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
         session.setAttribute("lastLoginDate",sf.format(info.get("lastLoginDate")));
-        System.out.println("电脑端输入框登录");
+       
         out.print("true");
       }
       catch (Exception e)
@@ -149,9 +149,23 @@ public class UserServlet
     {
       Map<String, Object> info = getInfo(request);
       User user = this.userService.getOneInfo(session.getAttribute("tel").toString());
-      
+      System.out.println(user.getAccount().toString());
       out.print(user.getAccount().toString());
-    }
+    }else if ("huafei".equals(opr)) {
+    	Map<String, Object> info = getInfo(request);
+    	User user = userService.getOneInfo(info.get("tel").toString());
+    	int id =user.getId();
+    	info.put("userid", id);
+    	info.put("tel", "");
+    	int count = userService.updateUser(info);
+    	if (count==1) {
+    		out.print("true");
+		}else {
+			out.print("false");
+		}
+    	
+    	
+	}
     else if ("sm".equals(opr))
     {
       String uip = request.getParameter("uip");
@@ -174,7 +188,13 @@ public class UserServlet
     }
     else if ("loginOK".equals(opr))
     {
-      out.print(true);
+     String username = request.getParameter("username");
+     if (username.equals(session.getAttribute("username"))) {
+    	 response.sendRedirect("User.jsp");
+    	 out.print(true);
+     }else {
+		out.print(false);
+	}
     }
     else if ("Phonelogin".equals(opr))
     {
@@ -265,11 +285,11 @@ public class UserServlet
       String paypwd = request.getParameter("paypwd");
       out.print(true);
     }else if ("changeheadimg".equals(opr)){//必须返回json格式的数据（修改头像）
-   	 String username= "";//用户名
-   	String fileName ="";//文件名
-   	String savePath = "";//保存路径
-     if(ServletFileUpload.isMultipartContent(request)){//判断请求是否是带有文件上传上来的请求
-    	//创建上传的解析对象
+	   	String username= "";//用户名
+	   	String fileName ="";//文件名
+	   	String savePath = "";//保存路径
+	     if(ServletFileUpload.isMultipartContent(request)){//判断请求是否是带有文件上传上来的请求
+	    	//创建上传的解析对象
 			ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
 			try {
 				//解析请求 获取到所有的表单元素集合
@@ -288,7 +308,7 @@ public class UserServlet
 						System.out.println("创建了新目录:"+tempFile.getName());
 					}
 					//保证文件名唯一
-					fileName = UUID.randomUUID().toString();
+					fileName = UUID.randomUUID().toString()+".jpg";
 					File file = new File(tempFile, fileName);
 					
 					item.write(file);  //把文件上传到服务器端
@@ -298,10 +318,21 @@ public class UserServlet
 			System.out.println("文件名是："+fileName);
 			System.out.println("保存路径是："+savePath);
 			
+			
+			Map<String, Object> info = getInfo(request);
+			info.put("image", fileName);
+			session.setAttribute("image", fileName);
+			int userid =Integer.valueOf(session.getAttribute("userid").toString()).intValue();
+			info.put("userid", userid);
+			int count = userService.updateUser(info);
+			
+			
 			//如果有数据库 要将图片的保存路径入库
 		} catch (Exception e) {}
      }
+	  
      JsonObject jsonObject =new JsonObject();
+     jsonObject.addProperty("fileName", fileName);
      out.print(new Gson().toJson(jsonObject));
  }
     
@@ -326,14 +357,17 @@ public class UserServlet
     
     String name = request.getParameter("name") == null ? "" : request.getParameter("name");
     
-    String tel = request.getParameter("tel") == null ? "" : request.getParameter("tel");
-    
     String idCard = request.getParameter("idCard") == null ? "" : request.getParameter("idCard");
+
+    String tel = request.getParameter("tel") == null ? "" : request.getParameter("tel");
     
     int money = request.getParameter("money") == null ? 0 : Integer.valueOf(request.getParameter("money")).intValue();
     
+    int friendsid = request.getParameter("friendsId") == null ? 0 : Integer.valueOf(request.getParameter("friendsId")).intValue();
+    
     Date lastLoginDate = new Date(); 
-
+    
+    String inorout = request.getParameter("inorout") == null ? "" : request.getParameter("inorout");
     Map<String, Object> info = new HashMap<String, Object>();
     info.put("username", username);
     info.put("loginPWD", loginPWD);
@@ -341,8 +375,10 @@ public class UserServlet
     info.put("image", image);
     info.put("age", Integer.valueOf(age));
     info.put("tel", tel);
+    info.put("friendsid", friendsid);
     info.put("idCard", idCard);
     info.put("name", name);
+    info.put("inorout", inorout);
     info.put("lastLoginDate", lastLoginDate);
     info.put("money", Integer.valueOf(money));
     return info;

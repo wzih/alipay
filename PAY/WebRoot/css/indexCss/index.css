@@ -12,11 +12,7 @@
 #top p {color: #999999; font-size: 14px;}
 #top p a{color: white; font-size: 14px;}
 #top p a:hover{color: #1E9FFF;}
-#bodytitle{
-	
-	
-	
-}
+
 #bodytitle ul{margin-top: 50px;}
 
 #bodytitle ul li span p{display: inline; color: whitesmoke; margin-left: 10px; font-size: 16px;line-height: 50px;}
@@ -39,7 +35,6 @@ cursor:pointer;/*鼠标指针样式*/
 #hu{font-size: 13px; color: #4E5465;}
 #foot ul li a:hover{ color: deepskyblue;}
 #foot p{font-size: 13px;}
-
 
 #f1{width: 35px; height: 20px; background-image: url(../../img/indexImgs/icons.png);
 	background-position-x: 0px;

@@ -24,8 +24,8 @@ public class UserService {
 		return user;
 	}
 	
-	public User getOneInfo(String username) {
-		return userDAOImpl.getOneInfo(username);
+	public User getOneInfo(String tel) {
+		return userDAOImpl.getOneInfo(tel);
 	}
 	
 	public User getInfo(Map<String, Object> info) {

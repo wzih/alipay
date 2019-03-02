@@ -24,6 +24,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							  var uploadInst = upload.render({
 							    elem: '#test1'
 							    ,url: 'UserServlet?opr=changeheadimg'
+							    ,exts:'jpg'
+							    ,acceptMime:'image/jpg'
 							    ,data: {
 								  user:function(){
 									    return $('#id').text();
@@ -37,7 +39,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							      //预读本地文件示例，不支持ie8
 							      obj.preview(function(index, file, result){
 							        $('#demo1').attr('src', result); //图片链接（base64）
-							        
 							        //console.log(index); //得到文件索引
      								//console.log(file); //得到文件对象
       								//console.log(result); //得到文件base64编码，比如图片
@@ -50,9 +51,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							      if(res.code > 0){
 							        return layer.msg('上传失败');
 							      }
+							      
 							      //上传成功
 							      var index = parent.layer.getFrameIndex(window.name);//获取窗口索引
 							      parent.layer.msg('更改成功！')
+							      var i = parent.$("#imgurl").html();
+							      alert(res.fileName);
+							      parent.$("#UserImg").attr('src','http://47.99.191.102:8080/PAY/UserImgs/'+res.fileName);
+							     
 							      parent.layer.close(index);
 							      
 							    }
