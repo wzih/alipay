@@ -589,8 +589,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											<!--//二维码div--><div id="erweima"  style=" text-align: center; margin-bottom: 30px; margin-top: 20px; padding: 0px; background-color: white; width: 50%; height: 38%; position: relative; left: 25%; ">
 																			<!--二维码--><img width="100%"  src="http://qr.topscan.com/api.php?text=http://47.99.191.102:8080/PAY/smLogin.jsp"/>
 																			
-																			<!--shaomaOK图片--><img id="shaomaOKimg"  style=" display: none; position: relative;bottom:100px;left:0px;" width="70px"  src="img/index2Imgs/smOK.png"/>
-																			<!--shaomaOK提示--><p id="shaomaOKtips"   style="display: none;color: #1E9FFF;position: relative;left: 10px;bottom: 60px; width: 100px;">请在手机上确认</p>
+																			<!--shaomaOK图片--><img id="shaomaOKimg"  style=" display: none; position: relative;bottom:110px;left:0px;" width="70px"  src="img/index2Imgs/smOK.png"/>
+																			<!--shaomaOK提示--><p id="shaomaOKtips"   style="display: none;color: #1E9FFF;position: relative;left: 25px;bottom: 54px; width: 100px;">请在手机上确认</p>
 																			
 																		 </div>
 											<!--//使用帮助div--><div id="useHelp"  hidden="hidden"  style=" margin-bottom: 30px; margin-top: 20px; padding:0px;background-image: url(img/index2Imgs/loginChange.png);  width: 50%; height: 38%; position: relative; left: 25%;background-position-y:-328px ; ">

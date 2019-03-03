@@ -66,7 +66,26 @@ public class UserServlet
       } else {
         out.print(new Gson().toJson("false"));
       }
-    }
+    }else if ("Phoneadd".equals(opr))//手机新增用户
+    {	
+    	//先验证手机验证码
+    	int userma =Integer.parseInt(request.getParameter("uma"));//用户输入的验证码
+    	if(userma==numberx){
+    		Map<String, Object> info = getInfo(request);
+            int addCount = this.userService.addUser(info);
+            User user = userService.getOneInfo(info.get("tel").toString());
+            int id = user.getId();
+            session.setAttribute("newId", id);
+            if (addCount == 1) {
+              out.print(true);
+            } else {
+              out.print("新增失败！");
+            }
+    	}else{
+    		out.print("验证码错误！");
+    	}
+    	
+      }
     else if ("update".equals(opr))//更改
     {
       Map<String, Object> info = getInfo(request);
@@ -110,6 +129,12 @@ public class UserServlet
       }
     }
     else if ("logout".equals(opr))
+    {
+      session.removeAttribute("user");
+      session.invalidate();
+      response.sendRedirect("index.jsp");
+    }
+    else if ("Phonelogout".equals(opr))
     {
       session.removeAttribute("user");
       session.invalidate();
@@ -186,18 +211,36 @@ public class UserServlet
     {
       getServletContext().removeAttribute("sm");
     }
-    else if ("loginOK".equals(opr))
+    else if ("loginOK".equals(opr))//loginOK手机扫码登录
     {
+    
      String username = request.getParameter("username");
-     if (username.equals(session.getAttribute("username"))) {
-    	 response.sendRedirect("User.jsp");
-    	 out.print(true);
-     }else {
-		out.print(false);
-	}
+     System.out.println("-------------手机端扫码登录 用户名是："+username);
+     String u=null;
+     try {
+    	  u =(String)this.getServletContext().getAttribute("PhoneisLoginYES");
+	} catch (Exception e) {}
+		     if(u!=null){//有人在手机端登录了
+		    	 if (username.equals(u)) {//判断是不是用户输入的username
+		    		 System.out.println("手机端扫码登录成功！返回true");
+		    		 out.print(true); //手机端登录
+		      		 response.sendRedirect("User.jsp");
+		      		
+		      	}else {
+		      		System.out.println("PhoneisLoginYES=!!!!===username");
+		      		out.print(false);//手机端没有登录
+		      	}
+		     }else{
+		    	 System.out.println("PhoneisLoginYES=====null");
+		    	 out.print(false);//手机端没有登录
+		     }
+     	
     }
-    else if ("Phonelogin".equals(opr))
-    {
+    else if ("Phonelogin".equals(opr))//手机app登录
+    {	
+    	
+      Map<String, Object> info = getInfo(request);
+      String tel = request.getParameter("tel");
       String username = request.getParameter("username");
       String loginPWD = request.getParameter("password");
       System.out.println("收到了手机的登录请求，用户名是" + username);
@@ -205,12 +248,31 @@ public class UserServlet
       {
         User user = this.userService.login(username, loginPWD);
         List<Friends> friends = this.friendsService.getAllFriens(user.getId().intValue());
+        this.getServletContext().setAttribute("friends", friends);
         session.setAttribute("friends", friends);
+        this.getServletContext().setAttribute("user", user);
         session.setAttribute("user", user);
-        session.setAttribute("username", username);
         int userid = user.getId().intValue();
+        this.getServletContext().setAttribute("userid",  Integer.valueOf(userid));
+        this.getServletContext().setAttribute("image",  user.getImage());
+        this.getServletContext().setAttribute("tel", user.getTel());
+        this.getServletContext().setAttribute("username",  user.getUsername());
         session.setAttribute("userid", Integer.valueOf(userid));
+        session.setAttribute("image", user.getImage());
+        session.setAttribute("tel", user.getTel());
+        session.setAttribute("username", user.getUsername());
+        info.put("userid", userid);
+        int count = userService.updateLastDate(info);
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.getServletContext().setAttribute("lastLoginDate",sf.format(info.get("lastLoginDate")));
+        this.getServletContext().setAttribute("PhoneisLoginYES",username);
+        session.setAttribute("lastLoginDate",sf.format(info.get("lastLoginDate")));
+        session.setAttribute("PhoneisLoginYES", username);
+        System.out.println("在application里放了键：PhoneisLoginYES，值："+username);
         out.print(new Gson().toJson(user));
+        ////
+        
+       
       }
       catch (Exception e)
       {
@@ -247,25 +309,15 @@ public class UserServlet
         out.print(false);
       }
     }
-    else if ("updatePwd".equals(opr))
+    else if ("updatePwd".equals(opr))//手机更改密码updatePwd
     {
       String pwd = request.getParameter("pwd");
-      
-
+      //数据库操作
       out.print(true);
     }
-    else if ("Phonezhuce".equals(opr))
+    else if ("Phonezhuce".equals(opr))//手机注册Phonezhuce发送验证码
     {
-      Map<String, Object> info = getInfo(request);
-      String pwd = request.getParameter("pwd");
       String tel = request.getParameter("tel");
-      String name = request.getParameter("name");
-      
-
-
-
-
-
       String Uid = "jianjun18666";
       
       String Key = "d41d8cd98f00b204e980";
