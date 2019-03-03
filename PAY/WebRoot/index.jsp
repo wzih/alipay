@@ -246,9 +246,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					"opr=sm&uip="+returnCitySN["cip"]+"&ucity="+returnCitySN["cname"],
 					function(rtnData){//out.print("smok"+uip);后台
 						var smokandip ="smok"+returnCitySN["cip"];
-						if(rtnData==smokandip){
+						if(rtnData==smokandip){//有人进扫码页面了
 							$("#shaomaOKtips").show();
 							$("#shaomaOKimg").show();
+									$.post(//判断是否点了登录并且成功！
+										"UserServlet",
+										"opr=loginOK2",
+										function(rtnData){
+											if(rtnData=="true"){
+												location.href="User.jsp"
+											}else if(rtnData=="false"){
+												
+											}
+											
+										},
+										"text"
+									);
 						}else{
 							$("#shaomaOKtips").hide();
 							$("#shaomaOKimg").hide();

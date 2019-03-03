@@ -30,13 +30,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					"opr=loginOK&username="+username,
 					function(rtnData){
 						if(rtnData=="true"){
-							$("#tips").text("请在PC端继续操作！")
+							console.log("t"+rtnData);
 							$("#PhoneLogin").hide();//登录模块隐藏
 							$("#goComputer").show();//提示模块出现
+							$("#tips").text("请在PC端继续操作！");
 						}else if(rtnData=="false"){
+								console.log("f"+rtnData);
 								$("#PhoneLogin").hide();//登录模块隐藏
 								$("#goComputer").show();//提示模块出现//先在手机app上登录！
-								$("#tips").text("先在手机app上登录！")
+								$("#tips").text("先在手机app上登录！");
 						}
 						
 					},

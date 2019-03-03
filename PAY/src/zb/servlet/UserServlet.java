@@ -36,6 +36,7 @@ public class UserServlet
 {
   public int numberx = 0;
   public int numbery = 0;
+  public boolean usersmloginisyes = false;
   UserService userService = new UserService();
   FriendsService friendsService = new FriendsService();
   
@@ -129,13 +130,15 @@ public class UserServlet
       }
     }
     else if ("logout".equals(opr))
-    {
+    { 
+      usersmloginisyes=false;
       session.removeAttribute("user");
       session.invalidate();
       response.sendRedirect("index.jsp");
     }
     else if ("Phonelogout".equals(opr))
-    {
+    { 
+      usersmloginisyes=false;
       session.removeAttribute("user");
       session.invalidate();
       response.sendRedirect("index.jsp");
@@ -210,6 +213,7 @@ public class UserServlet
     else if ("ClearIamshaomaPage".equals(opr))
     {
       getServletContext().removeAttribute("sm");
+      usersmloginisyes=false;
     }
     else if ("loginOK".equals(opr))//loginOK手机扫码登录
     {
@@ -222,19 +226,27 @@ public class UserServlet
 	} catch (Exception e) {}
 		     if(u!=null){//有人在手机端登录了
 		    	 if (username.equals(u)) {//判断是不是用户输入的username
-		    		 System.out.println("手机端扫码登录成功！返回true");
-		    		 out.print(true); //手机端登录
-		      		 response.sendRedirect("User.jsp");
-		      		
+		    		 System.out.println("手机端扫码登录成功!");
+		    		 usersmloginisyes=true;
+		    		 System.out.println("usersmloginisyes=true;");
+		      		 
 		      	}else {
 		      		System.out.println("PhoneisLoginYES=!!!!===username");
+		      		usersmloginisyes=false;
 		      		out.print(false);//手机端没有登录
 		      	}
 		     }else{
 		    	 System.out.println("PhoneisLoginYES=====null");
+		    	 usersmloginisyes=false;
 		    	 out.print(false);//手机端没有登录
 		     }
      	
+    }else if ("loginOK2".equals(opr)){
+    	if(usersmloginisyes){
+    		out.print(true);
+    	}else{
+    		out.print(false);
+    	}
     }
     else if ("Phonelogin".equals(opr))//手机app登录
     {	
@@ -249,26 +261,22 @@ public class UserServlet
         User user = this.userService.login(username, loginPWD);
         List<Friends> friends = this.friendsService.getAllFriens(user.getId().intValue());
         this.getServletContext().setAttribute("friends", friends);
-        session.setAttribute("friends", friends);
         this.getServletContext().setAttribute("user", user);
-        session.setAttribute("user", user);
         int userid = user.getId().intValue();
         this.getServletContext().setAttribute("userid",  Integer.valueOf(userid));
         this.getServletContext().setAttribute("image",  user.getImage());
         this.getServletContext().setAttribute("tel", user.getTel());
         this.getServletContext().setAttribute("username",  user.getUsername());
-        session.setAttribute("userid", Integer.valueOf(userid));
-        session.setAttribute("image", user.getImage());
-        session.setAttribute("tel", user.getTel());
-        session.setAttribute("username", user.getUsername());
         info.put("userid", userid);
         int count = userService.updateLastDate(info);
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.getServletContext().setAttribute("lastLoginDate",sf.format(info.get("lastLoginDate")));
         this.getServletContext().setAttribute("PhoneisLoginYES",username);
-        session.setAttribute("lastLoginDate",sf.format(info.get("lastLoginDate")));
-        session.setAttribute("PhoneisLoginYES", username);
+        
+        this.getServletContext().setAttribute("loginType","Phone");
+        
         System.out.println("在application里放了键：PhoneisLoginYES，值："+username);
+        System.out.println("在application里放了键：loginType，值：Phone");
         out.print(new Gson().toJson(user));
         ////
         

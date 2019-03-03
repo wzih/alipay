@@ -28,7 +28,11 @@ public class BankServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		BankService service = new BankService();
 		String opr = request.getParameter("opr");
-		int userid = Integer.valueOf(session.getAttribute("userid").toString());
+		
+		if(true){
+			int userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
+		
 		if (opr==null) {
 			List<Bank> banks = service.getAllBank();
 			session.setAttribute("banks", banks);
