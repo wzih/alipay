@@ -56,7 +56,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							$("#hellotext").text("上午好 ,")
 							
 						}else if(18<hour&&hour<23){
-							
 							$("#hellotext").text("晚上好 ,")
 							
 						}
@@ -91,7 +90,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									layer.open({
 									  type: 2,//0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
 									  title: '修改头像',
-									  area: ['300px', '300px'],
+									  area: ['240px', '280px'],
 									  fixed: false, //不固定
 									  maxmin: false,//可以最小化
 									  scrollbar: false,//浏览器滚动条已锁
@@ -982,7 +981,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											</div>
 											
 											<!--最底层div-->
-				<div  id="bodyd" style="width: 300%;  height:auto; position: absolute; left: -29.5%;  background-color: #23262E ">
+				<div  id="bodyd" style="width: 160%;  height:auto; position: absolute; left: -29.5%;  background-color: #23262E ">
 					
 						<div id="bottom" style="color: #F5F5F5; font-size: 12px;margin-left:10%; margin-right:10%; z-index: 3;height: 180px;">
 						<br/><br/><br/>

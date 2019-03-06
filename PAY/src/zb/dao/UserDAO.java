@@ -15,4 +15,6 @@ public interface UserDAO {
 	int updateUser(Map<String, Object>info);//更改信息
 	
 	int updateLastDate(Map<String, Object>info); //更新登录时间
+	
+	int huafei(int id,int money);
 }

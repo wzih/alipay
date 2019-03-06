@@ -24,16 +24,23 @@ public class VIPServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		VIPService service = new VIPService();
 		HttpSession session = request.getSession();
-		
+		int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+			
+		} else {
+
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
 		String opr = request.getParameter("opr");
 		if (opr==null) {
-			int userid = Integer.valueOf(session.getAttribute("userid").toString());
+			
 			VIP vip = service.getOneInfo(userid);
 			session.setAttribute("VIP", vip);
 			response.sendRedirect("TaobaoServlet");
 		}else if ("add".equals(opr)) {
-			int userid = Integer.valueOf(session.getAttribute("newId").toString());
-			int count = service.add(userid);
+			int newuserid = Integer.valueOf(session.getAttribute("newId").toString());
+			int count = service.add(newuserid);
 			
 		} 
 			

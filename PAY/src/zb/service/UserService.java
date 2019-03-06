@@ -44,4 +44,8 @@ public class UserService {
 	public int updateLastDate(Map<String, Object> info) {
 		return userDAOImpl.updateLastDate(info);
 	}
+	
+	public int huafei(int id, int money) {
+		return userDAOImpl.huafei(id, money);
+	}
 }

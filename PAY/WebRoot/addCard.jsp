@@ -11,6 +11,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <base href="<%=basePath%>">
     <title>新增银行卡</title>
   </head>
+  	<script src="layer/layer.js" type="text/javascript" charset="utf-8"></script>
    <script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
   <script type="text/javascript">
   		$(function(){
@@ -35,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						"opr=add&cardNum="+bankcardid+"&bankid="+bankid,
 						function(rtnData){
 							if (rtnData=="true") {
-								alert("添加成功！");
+								layer.msg('添加成功!');
 								location.href = "CardServlet";
 							}
 						},

@@ -17,9 +17,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<script src="layDate-v5.0.9/laydate/laydate.js" type="text/javascript" charset="utf-8"></script>
 		<script src="layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
 		<script src="layui/layui.js" type="text/javascript" charset="utf-8"></script>
-
+		<script src="layer/layer.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
 		<script type="text/javascript">
+		 	var t=60;
+			var time =null;
 			$(function(){
 				
 					
@@ -35,6 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var paypwd = $("#fmz-zc-pay").val();
 				var repaypwd = $("#fmz-zc-repay").val();
 				var tel = $("#fmz-zc-tel").val();
+				var yzm = $("#fmz-zc-yzm").val();
 				var id="";
 				
 				if ($("#main input[type='text']").val()==""||$("#main input[type='password']".val)=="") {
@@ -101,13 +104,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						
 					$.post(
 						"UserServlet",
-						"opr=add&tel="+tel+"&username="+username+"&name="+name+"&idCard="+cardid+"&loginPWD="+loginpwd+"&payPWD="+paypwd,
+						"opr=add&tel="+tel+"&username="+username+"&name="+name+"&idCard="+cardid+"&loginPWD="+loginpwd+"&payPWD="+paypwd+"&yzm="+yzm,
 						function(rtnDate){
 							if (rtnDate!="true") {
-								layer.open({
-									title: '提示'
-									,content: '注册成功！'
-								});
 							}	
 						},
 						"json"
@@ -122,6 +121,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					)
 							
 							
+								layer.open({
+									title: '提示'
+									,content: '注册成功！'
+								});
 							
 				location.href = "index.jsp";
 				
@@ -178,20 +181,39 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 			function send(){
 				var tel = $("#fmz-zc-tel").val();
+				if(tel==""){
+					layer.msg('请填写手机号码！');
+					return;
+				}
 				$.post(
 					"UserServlet",
 					"opr=checkTel&tel="+tel,
 					function(rtnDate){
 						if (rtnDate!="false") {
 							layer.open({
-								title: '提示'
+								 title: '提示'
 								,content: '手机号已注册，请登录或重新输入其他手机号！'
 							}); 
 							return;
-						}					
+						}else{
+						//成功发送验证码
+							time= setInterval("cd()",1000);
+							$("#cdtime").disabled=true;
+						}				
 					},
 					"json"
 				)
+			}
+			function cd(){
+					$("#cdtime").attr("value",t+"秒后可再次发送");
+					$("#cdtime").attr('disabled','disabled');//13093039599
+					t=t-1;
+					if(t==-1){
+						t=60;
+						$("#cdtime").removeAttr("disabled");
+						$("#cdtime").attr("value","发送验证码");
+						clearInterval(time);
+					}
 			}
 		</script>
 		<title>注册</title>
@@ -302,8 +324,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				<div style="float: left;width: 640px;height:240px;"><!--右-->
 					<div style="width: 640px;height: 55px; ">&nbsp;&nbsp;&nbsp;
-						<input id="fmz-zc-name"onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" 
-								onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))"  type="text" style="width: 200px; height: 30px; border:1px solid lightgray;"/>
+						<input id="fmz-zc-name"  type="text" style="width: 200px; height: 30px; border:1px solid lightgray;"/>
 						<br/>&nbsp;&nbsp;&nbsp;
 					</div>
 					
@@ -346,8 +367,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					
 					<div style="width: 640px;height: 55px; ">&nbsp;&nbsp;&nbsp;
-						<input id="fmz-zc-inputg"  	 type="text" style="width: 100px; height: 30px; border:1px solid lightgray;"/>
-						&nbsp;<input type="button" onclick="send()" value="发送验证码" style="width: 90px;height: 34px;"/>
+						<input id="fmz-zc-yzm"   type="text" style="width: 100px; height: 30px; border:1px solid lightgray;"/>
+						&nbsp;<input id="cdtime" type="button" onclick="send()" value="发送验证码" style="width: 90px;height: 34px;"/>
 						<br/>&nbsp;&nbsp;&nbsp;
 					</div>
 					<div style="width: 640px;height: 55px; ">&nbsp;&nbsp;
@@ -361,7 +382,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 		</div>
 		
-		<div  id="bodyd" style="width: 100%;  height:auto;   background-color: #23262E ">
+		<div  id="bodyd" style="width: 180%;  height:auto;   background-color: #23262E ">
 			<div id="bottom" style="color: #F5F5F5; font-size: 12px;margin-left:10%; z-index: 3;height: 180px;">
 				<br/><br/><br/>
 				<div style="margin-bottom: 5px;">

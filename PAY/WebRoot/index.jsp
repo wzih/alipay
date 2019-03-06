@@ -535,7 +535,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<a style="margin-top: 5px;" href="#">支付宝服务协议的更新公告</a><br/><a href="#">关于防范和打击电信网络诈骗... </a></h5></div>
 				<div class="fmztop2" style="margin-top: 40px;font-size: 14px;display: inline-block;width: 290px;height: 139px;vertical-align:middle;"><span>支付宝官方微博</span> <a href="#" style="text-decoration:underline;">+关注</a><br/><br/><br/></div>
 				<div class="fmztop2" style="margin-top: 40px;font-size: 14px;display: inline-block;width: 290px;height: 139px;vertical-align:middle;"><p>下载支付宝</p>
-					<img src="http://b.bshare.cn/barCode?site=weixin&url=http://47.99.191.102:8080/PAY/" /></div>
+					<img src="img/appm.png" /></div>
 				<div class="fmztop2" style="margin-top: 40px;font-size: 14px;display: inline-block;width: 290px;height: 139px;vertical-align:middle;"><h4 style="color:black; font-weight: bolder;">支付宝E公益</h4><br/><p>帮助听力智障儿童，献爱心。</p>
 					<a href="javascript:void(0)" style="text-align: center; margin-top: 15px; color: white; display: block; width: 80px; height: 25px; line-height: 25px; background-color: #555555;">立即查看</a>
 					<img style="position: relative;bottom: 110px;left:180px;" src="img/index2Imgs/item7-ren.jpg"/>

@@ -41,7 +41,13 @@ public class BillServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		
 		String opr = request.getParameter("opr");
-		int userid = Integer.valueOf(session.getAttribute("userid").toString());
+		int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+		} else {
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+
+		}
 		if (opr==null) {
 			Map<String, Object> info = getInfo(request);
 			info.put("userid", userid);

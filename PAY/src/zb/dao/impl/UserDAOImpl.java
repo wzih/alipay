@@ -139,4 +139,11 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 		return executeUpdate(sql,lastDate,userid);
 	}
 
+	public int huafei(int id, int money) {
+		String sql = "UPDATE USER SET BALANCE = BALANCE - ? WHERE ID = ?;";
+		
+		return executeUpdate(sql, money,id);
+	}
+
+	
 }

@@ -14,6 +14,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<script type="text/javascript">
 			$(function(){
 			
+			window.onbeforeunload=function(e){     
+			　　$.post(//发一个ajax到服务器清除扫码
+								"UserServlet",
+								"opr=ClearIamshaomaPage",
+								function(rtnData){},
+								"text"
+								);
+			} 
+			
 				setTimeout(function(){
 						$.post(//进此页面就发一个ajax到服务器，告诉服务器有人扫码了，无返回值-han01
 						"UserServlet",

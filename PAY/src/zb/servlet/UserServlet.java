@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,9 @@ public class UserServlet
   public int numberx = 0;
   public int numbery = 0;
   public boolean usersmloginisyes = false;
+    String tel= "";
+	String money= "";
+	String uout =""; 
   UserService userService = new UserService();
   FriendsService friendsService = new FriendsService();
   
@@ -56,17 +60,21 @@ public class UserServlet
     
     HttpSession session = request.getSession();
     if ("add".equals(opr))
-    {
-      Map<String, Object> info = getInfo(request);
-      int addCount = this.userService.addUser(info);
-      User user = userService.getOneInfo(info.get("tel").toString());
-      int id = user.getId();
-      session.setAttribute("newId", id);
-      if (addCount == 1) {
-        out.print(new Gson().toJson(id));
-      } else {
-        out.print(new Gson().toJson("false"));
-      }
+    { 
+    	int useryzm = Integer.parseInt(request.getParameter("yzm"));
+    	if(useryzm==numberx){
+    		  Map<String, Object> info = getInfo(request);
+    	      int addCount = this.userService.addUser(info);
+    	      User user = userService.getOneInfo(info.get("tel").toString());
+    	      int id = user.getId();
+    	      session.setAttribute("newId", id);
+    	      if (addCount == 1) {
+    	        out.print(new Gson().toJson(id));
+    	      } else {
+    	        out.print(new Gson().toJson("false"));
+    	      }
+    	}
+     
     }else if ("Phoneadd".equals(opr))//手机新增用户
     {	
     	//先验证手机验证码
@@ -90,7 +98,14 @@ public class UserServlet
     else if ("update".equals(opr))//更改
     {
       Map<String, Object> info = getInfo(request);
-      int userid =Integer.valueOf(session.getAttribute("userid").toString()).intValue();
+      int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+			
+		} else {
+
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
       info.put("userid", Integer.valueOf(userid));
       int updateCount = this.userService.updateUser(info);
       if (updateCount == 1) {
@@ -131,26 +146,33 @@ public class UserServlet
     }
     else if ("logout".equals(opr))
     { 
-      usersmloginisyes=false;
+      
       session.removeAttribute("user");
       session.invalidate();
       response.sendRedirect("index.jsp");
     }
-    else if ("Phonelogout".equals(opr))
+    else if ("Phonelogout".equals(opr))//手机app用户退出
     { 
+      System.out.println("手机app用户退出");
       usersmloginisyes=false;
-      session.removeAttribute("user");
-      session.invalidate();
-      response.sendRedirect("index.jsp");
+      this.getServletContext().removeAttribute("user");
     }
-    else if ("checkTel".equals(opr))
+    else if ("checkTel".equals(opr))//pc注册页面发送验证码
     {
       Map<String, Object> info = getInfo(request);
       User user = this.userService.getInfo(info);
       if (user != null) {
-        out.print(new Gson().toJson(user));
-      } else {
-        out.print(new Gson().toJson("false"));
+        out.print(new Gson().toJson(user));//注册过了
+      } else {//没有注册过，发送验证码
+    	  String UserPhone = request.getParameter("tel");
+          String Uid = "jianjun18666";
+          String Key = "d41d8cd98f00b204e980";
+          String smsMob = UserPhone;
+          this.numberx = ((int)(1.0D + Math.random() * 1000000.0D));
+          String smsText = "alipay-您的注册验证码为：" + this.numberx + "，有效时间10分钟。若非本人操作，请忽略本条短信。";
+          HttpClientUtil client = HttpClientUtil.getInstance();
+          client.sendMsgUtf8(Uid, Key, smsText, smsMob);
+    	 out.print(new Gson().toJson("false"));
       }
     }
     else if ("checkidCard".equals(opr))
@@ -160,7 +182,7 @@ public class UserServlet
         if (user != null) {
           out.print(new Gson().toJson(user));
         } else {
-          out.print(new Gson().toJson("false"));
+         out.print(new Gson().toJson("false"));
         }
      }
     else if ("checkLoginPwd".equals(opr)) {
@@ -176,28 +198,42 @@ public class UserServlet
     else if ("searchBalance".equals(opr))
     {
       Map<String, Object> info = getInfo(request);
-      User user = this.userService.getOneInfo(session.getAttribute("tel").toString());
+      User user = null;
+      	if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			user = this.userService.getOneInfo(this.getServletContext().getAttribute("tel").toString());
+		} else {
+			 user = this.userService.getOneInfo(session.getAttribute("tel").toString());
+		}
       System.out.println(user.getAccount().toString());
       out.print(user.getAccount().toString());
-    }else if ("huafei".equals(opr)) {
-    	Map<String, Object> info = getInfo(request);
-    	User user = userService.getOneInfo(info.get("tel").toString());
-    	int id =user.getId();
-    	info.put("userid", id);
-    	info.put("tel", "");
-    	int count = userService.updateUser(info);
-    	if (count==1) {
-    		out.print("true");
-		}else {
-			out.print("false");
-		}
-    	
-    	
+    }else if ("huafei".equals(opr)) {//pc端充值话费
+    	 tel= request.getParameter("telnum");
+    	 money= request.getParameter("money");
+    	 uout ="out"; 
+    	 out.print(true);
 	}
-    else if ("sm".equals(opr))
+    else if ("huafei2".equals(opr)) {//sj端充值话费确认按钮
+    	int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+			
+		} else {
+
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
+    	int count = userService.huafei(userid, Integer.valueOf(money));
+    	if (count==1) {
+			out.print(true);
+		}
+	}else if ("huafeiPage".equals(opr)) {//进入了手机话费充值页面
+		User user =new User(0, money, tel);
+    	out.print(new Gson().toJson(user));                       
+	}
+    else if ("sm".equals(opr))//pc端二维码登录出现时 重复
     {
       String uip = request.getParameter("uip");
       String ucity = request.getParameter("ucity");
+      System.out.println(ucity+"-"+uip+"登录");
       if (getServletContext().getAttribute("sm") != null)
       {
         String sm = (String)getServletContext().getAttribute("sm");
@@ -213,7 +249,6 @@ public class UserServlet
     else if ("ClearIamshaomaPage".equals(opr))
     {
       getServletContext().removeAttribute("sm");
-      usersmloginisyes=false;
     }
     else if ("loginOK".equals(opr))//loginOK手机扫码登录
     {
@@ -275,6 +310,13 @@ public class UserServlet
         
         this.getServletContext().setAttribute("loginType","Phone");
         
+		if (this.getServletContext().getAttribute("loginType").equals("Phone")) {
+			System.out.println("phone");
+			
+		} else {
+			System.out.println("computer");
+			
+		}
         System.out.println("在application里放了键：PhoneisLoginYES，值："+username);
         System.out.println("在application里放了键：loginType，值：Phone");
         out.print(new Gson().toJson(user));

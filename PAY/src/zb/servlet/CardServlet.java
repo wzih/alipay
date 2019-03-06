@@ -29,7 +29,14 @@ public class CardServlet extends HttpServlet {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
-		int userid = Integer.valueOf(session.getAttribute("userid").toString());
+		int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+			
+		} else {
+
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
 		String opr= request.getParameter("opr");
 		String id=null;
 		if (opr==null) {

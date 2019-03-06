@@ -28,7 +28,15 @@ public class YuebaoServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		HttpSession session = request.getSession();
 		String opr = request.getParameter("opr");
-		int userid = Integer.valueOf(session.getAttribute("userid").toString());
+		int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+			
+		} else {
+
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
+		
 		if (opr==null) {
 			Yuebao yuebao = service.getOneInfo(userid);
 			session.setAttribute("yuebaoInfo", yuebao);

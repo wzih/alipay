@@ -31,12 +31,20 @@ public class UnReadMsgServlet extends HttpServlet {
 		HttpSession session =request.getSession();
 		UnReadMsgService msgService =new UnReadMsgService();
 		String opr =request.getParameter("opr");
+		int userid = 0;
+		if ("Phone".equals(this.getServletContext().getAttribute("loginType"))) {
+			userid = Integer.valueOf(this.getServletContext().getAttribute("userid").toString());
+			
+		} else {
+
+			userid = Integer.valueOf(session.getAttribute("userid").toString());
+		}
 		if("getAllmsg".equals(opr)){//获取所有的未读信息
 //			User user = (User) session.getAttribute("user");
 //			int userid = user.getId().intValue();
 			
 			
-			List<UnReadMsg> msgs= msgService.getAllmsg(1007);
+			List<UnReadMsg> msgs= msgService.getAllmsg(userid);
 			out.print(new Gson ().toJson(msgs));			
 		}else if(opr==null){
 			

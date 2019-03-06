@@ -56,7 +56,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							      var index = parent.layer.getFrameIndex(window.name);//获取窗口索引
 							      parent.layer.msg('更改成功！')
 							      var i = parent.$("#imgurl").html();
-							      alert(res.fileName);
 							      parent.$("#UserImg").attr('src','http://47.99.191.102:8080/PAY/UserImgs/'+res.fileName);
 							     
 							      parent.layer.close(index);
